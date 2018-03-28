@@ -38,6 +38,17 @@ func ExampleExcept_b() {
 	// [3 4]
 }
 
+func ExampleExcept_string() {
+	a := []string{"who", "what", "when"}
+	b := []string{"when", "where", "why"}
+
+	exceptI, _ := Except(a, b)
+	except := exceptI.([]int)
+	fmt.Println(except)
+	// Output:
+	// [who what]
+}
+
 func TestIntersection(t *testing.T) {
 	a := []int{1, 2, 3}
 	b := []int{2, 3, 4}
