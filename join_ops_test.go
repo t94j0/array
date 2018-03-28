@@ -16,6 +16,28 @@ func ExampleIntersection() {
 	// [2 3]
 }
 
+func ExampleExcept_a() {
+	a := []int{1, 2, 5}
+	b := []int{2, 3, 4}
+
+	exceptI, _ := Except(a, b)
+	except := exceptI.([]int)
+	fmt.Println(except)
+	// Output:
+	// [1 5]
+}
+
+func ExampleExcept_b() {
+	a := []int{1, 2, 5}
+	b := []int{2, 3, 4}
+
+	exceptI, _ := Except(b, a)
+	except := exceptI.([]int)
+	fmt.Println(except)
+	// Output:
+	// [3 4]
+}
+
 func TestIntersection(t *testing.T) {
 	a := []int{1, 2, 3}
 	b := []int{2, 3, 4}
