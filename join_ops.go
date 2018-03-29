@@ -1,7 +1,6 @@
 package array
 
 import (
-	"errors"
 	"reflect"
 )
 
@@ -17,12 +16,11 @@ func getABValType(a, b interface{}) (reflect.Value, reflect.Type, reflect.Value,
 // Intersection takes two array/slices and finds the common values between the
 // two arrays. The returned type will be of the first variable, and is
 // gaurenteed to return no values if the two arrays have a dissimilar type.
-func Intersection(a, b interface{}) (interface{}, error) {
-	aVal, aType, bVal, bType := getABValType(a, b)
+func Intersection(a, b interface{}) interface{} {
+	aVal, aType, _, bType := getABValType(a, b)
 
 	if aType.Kind() != reflect.Slice || bType.Kind() != reflect.Slice {
-		return reflect.Zero(aType),
-			errors.New("First and second arguments must be slices")
+		return reflect.Zero(aType)
 	}
 
 	newSlice := reflect.MakeSlice(aType, 0, 0)
@@ -33,17 +31,16 @@ func Intersection(a, b interface{}) (interface{}, error) {
 		}
 	}
 
-	return newSlice.Interface(), nil
+	return newSlice.Interface()
 }
 
 // Except takes two array/slices and finds values that are only in the first
 // slice.
-func Except(a, b interface{}) (interface{}, error) {
-	aVal, aType, bVal, bType := getABValType(a, b)
+func Except(a, b interface{}) interface{} {
+	aVal, aType, _, bType := getABValType(a, b)
 
 	if aType.Kind() != reflect.Slice || bType.Kind() != reflect.Slice {
-		return reflect.Zero(aType),
-			errors.New("First and second arguments must be slices")
+		return reflect.Zero(aType)
 	}
 
 	newSlice := reflect.MakeSlice(aType, 0, 0)
@@ -54,5 +51,5 @@ func Except(a, b interface{}) (interface{}, error) {
 		}
 	}
 
-	return newSlice.Interface(), nil
+	return newSlice.Interface()
 }
