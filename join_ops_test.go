@@ -5,6 +5,7 @@ import (
 	"testing"
 )
 
+// Examples
 func ExampleIntersection() {
 	a := []int{1, 2, 3}
 	b := []int{2, 3, 4}
@@ -43,12 +44,28 @@ func ExampleExcept_string() {
 	b := []string{"when", "where", "why"}
 
 	exceptI, _ := Except(a, b)
-	except := exceptI.([]int)
+	except := exceptI.([]string)
 	fmt.Println(except)
 	// Output:
 	// [who what]
 }
 
+// Benchmark
+var result []int
+
+func BenchmarkIntersection(bench *testing.B) {
+	a := []int{1, 2, 3, 4, 5, 6, 7, 8, 9, 10}
+	b := []int{12, 4, 3, 16, 100, 9, 1, 18, 124}
+	var r []int
+	for i := 0; i < bench.N; i++ {
+		rI, _ := Intersection(a, b)
+		r = rI.([]int)
+	}
+	result = r
+}
+
+// Tests
+// Intersection
 func TestIntersection(t *testing.T) {
 	a := []int{1, 2, 3}
 	b := []int{2, 3, 4}
@@ -64,6 +81,7 @@ func TestIntersection(t *testing.T) {
 	}
 }
 
+// Except
 func TestExcept_int(t *testing.T) {
 	a := []int{1, 2, 5}
 	b := []int{2, 3, 4}
