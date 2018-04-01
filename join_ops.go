@@ -13,9 +13,23 @@ func getABValType(a, b interface{}) (reflect.Value, reflect.Type, reflect.Value,
 	return aVal, aType, bVal, bType
 }
 
+// requires a to be of type reflect.Slice
+func makeSliceMapInterface(a reflect.Value) reflect.Value {
+	sliceLen := a.Len()
+	itemMapT := reflect.MapOf(a.Type().Elem(), reflect.TypeOf(1))
+	itemMap := reflect.MakeMapWithSize(itemMapT, sliceLen)
+	for i := 0; i < sliceLen; i++ {
+		itemMap.SetMapIndex(a.Index(i), reflect.ValueOf(1))
+	}
+
+	return itemMap
+}
+
 // Intersection takes two array/slices and finds the common values between the
 // two arrays. The returned type will be of the first variable, and is
 // gaurenteed to return no values if the two arrays have a dissimilar type.
+//
+// TODO(t94j0) Make equivalence of MapIndex() to invalid value better
 func Intersection(a, b interface{}) interface{} {
 	aVal, aType, bVal, bType := getABValType(a, b)
 
@@ -24,25 +38,12 @@ func Intersection(a, b interface{}) interface{} {
 		return reflect.Zero(itemType)
 	}
 
+	bMap := makeSliceMapInterface(bVal)
 	newSlice := reflect.MakeSlice(aType, 0, 0)
 
-	aLen := aVal.Len()
-	bLen := bVal.Len()
-	itemMap := reflect.MapOf(itemType, reflect.TypeOf(1))
-	newMap := reflect.MakeMapWithSize(itemMap, bLen)
-
-	// Create map with 'b'
-	for i := 0; i < bLen; i++ {
-		sliceItem := bVal.Index(i)
-		newMap.SetMapIndex(sliceItem, reflect.ValueOf(1))
-	}
-
-	// Check 'b' map with 'a' values
-	for i := 0; i < aLen; i++ {
+	for i := 0; i < aVal.Len(); i++ {
 		sliceItem := aVal.Index(i)
-
-		// TODO: There should be a better way to do this
-		if newMap.MapIndex(sliceItem).Kind().String() != reflect.Invalid.String() {
+		if bMap.MapIndex(sliceItem).Kind().String() != reflect.Invalid.String() {
 			newSlice = reflect.Append(newSlice, sliceItem)
 		}
 	}
@@ -53,17 +54,19 @@ func Intersection(a, b interface{}) interface{} {
 // Except takes two array/slices and finds values that are only in the first
 // slice.
 func Except(a, b interface{}) interface{} {
-	aVal, aType, _, bType := getABValType(a, b)
+	aVal, aType, bVal, bType := getABValType(a, b)
 
 	if aType.Kind() != reflect.Slice || bType.Kind() != reflect.Slice {
 		return reflect.Zero(aType)
 	}
 
+	bMap := makeSliceMapInterface(bVal)
 	newSlice := reflect.MakeSlice(aType, 0, 0)
 
 	for i := 0; i < aVal.Len(); i++ {
-		if !In(aVal.Index(i).Interface(), b) {
-			newSlice = reflect.Append(newSlice, aVal.Index(i))
+		sliceItem := aVal.Index(i)
+		if bMap.MapIndex(sliceItem).Kind().String() == reflect.Invalid.String() {
+			newSlice = reflect.Append(newSlice, sliceItem)
 		}
 	}
 
