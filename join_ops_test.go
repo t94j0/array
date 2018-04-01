@@ -2,6 +2,7 @@ package array
 
 import (
 	"fmt"
+	"math/rand"
 	"testing"
 )
 
@@ -47,29 +48,57 @@ func ExampleExcept_string() {
 }
 
 // Benchmark
-var result []int
-
-func BenchmarkIntersection(bench *testing.B) {
-	a := []int{1, 2, 3, 4, 5, 6, 7, 8, 9, 10}
-	b := []int{12, 4, 3, 16, 100, 9, 1, 18, 124}
-	var r []int
-	for i := 0; i < bench.N; i++ {
-		r = Intersection(a, b).([]int)
+func genTwoIntArr(len int) (a []int, b []int) {
+	for i := 0; i < len; i++ {
+		a = append(a, rand.Intn(100))
+		b = append(b, rand.Intn(100))
 	}
-	result = r
+	return
 }
+
+func benchIntersection(len int, b *testing.B) {
+	one, two := genTwoIntArr(len)
+	for n := 0; n < b.N; n++ {
+		Intersection(one, two)
+	}
+}
+
+func BenchmarkIntersection100(b *testing.B)    { benchIntersection(100, b) }
+func BenchmarkIntersection1000(b *testing.B)   { benchIntersection(1000, b) }
+func BenchmarkIntersection10000(b *testing.B)  { benchIntersection(10000, b) }
+func BenchmarkIntersection100000(b *testing.B) { benchIntersection(100000, b) }
 
 // Tests
 // Intersection
+
+func hasInteger(i int, arr []int) bool {
+	for _, item := range arr {
+		if item == i {
+			return true
+		}
+	}
+	return false
+}
+
 func TestIntersection(t *testing.T) {
 	a := []int{1, 2, 3}
 	b := []int{2, 3, 4}
 
 	intersects := Intersection(a, b).([]int)
 
-	if len(intersects) != 2 || intersects[0] != 2 || intersects[1] != 3 {
+	if len(intersects) != 2 {
+		fmt.Println(intersects)
 		t.Fatal("Result array has incorrect terms")
 	}
+
+	if !hasInteger(2, intersects) {
+		t.Fatal("Number two not found")
+	}
+
+	if !hasInteger(3, intersects) {
+		t.Fatal("Number three not found")
+	}
+
 }
 
 // Except

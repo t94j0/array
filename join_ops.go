@@ -17,17 +17,33 @@ func getABValType(a, b interface{}) (reflect.Value, reflect.Type, reflect.Value,
 // two arrays. The returned type will be of the first variable, and is
 // gaurenteed to return no values if the two arrays have a dissimilar type.
 func Intersection(a, b interface{}) interface{} {
-	aVal, aType, _, bType := getABValType(a, b)
+	aVal, aType, bVal, bType := getABValType(a, b)
 
+	itemType := bType.Elem()
 	if aType.Kind() != reflect.Slice || bType.Kind() != reflect.Slice {
-		return reflect.Zero(aType)
+		return reflect.Zero(itemType)
 	}
 
 	newSlice := reflect.MakeSlice(aType, 0, 0)
 
-	for i := 0; i < aVal.Len(); i++ {
-		if In(aVal.Index(i).Interface(), b) {
-			newSlice = reflect.Append(newSlice, aVal.Index(i))
+	aLen := aVal.Len()
+	bLen := bVal.Len()
+	itemMap := reflect.MapOf(itemType, reflect.TypeOf(1))
+	newMap := reflect.MakeMapWithSize(itemMap, bLen)
+
+	// Create map with 'b'
+	for i := 0; i < bLen; i++ {
+		sliceItem := bVal.Index(i)
+		newMap.SetMapIndex(sliceItem, reflect.ValueOf(1))
+	}
+
+	// Check 'b' map with 'a' values
+	for i := 0; i < aLen; i++ {
+		sliceItem := aVal.Index(i)
+
+		// TODO: There should be a better way to do this
+		if newMap.MapIndex(sliceItem).Kind().String() != reflect.Invalid.String() {
+			newSlice = reflect.Append(newSlice, sliceItem)
 		}
 	}
 
