@@ -22,24 +22,3 @@ func In(item interface{}, slice interface{}) bool {
 
 	return false
 }
-
-// InMap
-func InMap(item, slice interface{}) interface{} {
-	if reflect.TypeOf(slice).Kind() != reflect.Slice {
-		return false
-	}
-
-	sliceVal := reflect.ValueOf(slice)
-	sliceLen := sliceVal.Len()
-	itemVal := reflect.ValueOf(item)
-	itemType := itemVal.Type()
-	itemMap := reflect.MapOf(itemType, itemType)
-	newMap := reflect.MakeMapWithSize(itemMap, sliceLen)
-
-	for i := 0; i < sliceLen; i++ {
-		sliceItem := sliceVal.Index(i)
-		newMap.SetMapIndex(sliceItem, reflect.ValueOf(0))
-	}
-
-	return newMap.MapIndex(itemVal) != reflect.Zero(itemType)
-}

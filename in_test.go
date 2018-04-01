@@ -40,27 +40,6 @@ func BenchmarkInLen100(b *testing.B)     { benchmarkIn(100, b) }
 func BenchmarkInLen1000(b *testing.B)    { benchmarkIn(1000, b) }
 func BenchmarkInLen1000000(b *testing.B) { benchmarkIn(1000000, b) }
 
-// InMap
-func benchmarkInMap(len int, b *testing.B) {
-	var o []int
-
-	for i := 0; i < len; i++ {
-		o = append(o, rand.Int())
-	}
-
-	item := o[rand.Intn(len)]
-
-	for n := 0; n < b.N; n++ {
-		InMap(item, o)
-	}
-}
-
-func BenchmarkInMapLen5(b *testing.B)       { benchmarkInMap(5, b) }
-func BenchmarkInMapLen100(b *testing.B)     { benchmarkInMap(100, b) }
-func BenchmarkInMapLen1000(b *testing.B)    { benchmarkInMap(1000, b) }
-func BenchmarkInMapLen10000(b *testing.B)   { benchmarkInMap(10000, b) }
-func BenchmarkInMapLen1000000(b *testing.B) { benchmarkInMap(1000000, b) }
-
 // Tests
 func TestIn_intequal(t *testing.T) {
 	a := []int{1, 2, 3, 4}
