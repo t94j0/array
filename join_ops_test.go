@@ -11,7 +11,10 @@ func ExampleIntersection() {
 	a := []int{1, 2, 3}
 	b := []int{2, 3, 4}
 
-	intersections := Intersection(a, b).([]int)
+	intersections, ok := Intersection(a, b).([]int)
+	if !ok {
+		fmt.Println("Error unwrapping")
+	}
 	fmt.Println(intersections)
 	// Output:
 	// [2 3]
@@ -21,7 +24,10 @@ func ExampleExcept_a() {
 	a := []int{1, 2, 5}
 	b := []int{2, 3, 4}
 
-	except := Except(a, b).([]int)
+	except, ok := Except(a, b).([]int)
+	if !ok {
+		fmt.Println("Error unwrapping")
+	}
 	fmt.Println(except)
 	// Output:
 	// [1 5]
@@ -31,7 +37,10 @@ func ExampleExcept_b() {
 	a := []int{1, 2, 5}
 	b := []int{2, 3, 4}
 
-	except := Except(b, a).([]int)
+	except, ok := Except(b, a).([]int)
+	if !ok {
+		fmt.Println("Error unwrapping")
+	}
 	fmt.Println(except)
 	// Output:
 	// [3 4]
@@ -41,7 +50,10 @@ func ExampleExcept_string() {
 	a := []string{"who", "what", "when"}
 	b := []string{"when", "where", "why"}
 
-	except := Except(a, b).([]string)
+	except, ok := Except(a, b).([]string)
+	if !ok {
+		fmt.Println("Error unwrapping")
+	}
 	fmt.Println(except)
 	// Output:
 	// [who what]
