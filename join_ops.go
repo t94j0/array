@@ -33,9 +33,8 @@ func makeSliceMapInterface(a reflect.Value) reflect.Value {
 func Intersection(a, b interface{}) interface{} {
 	aVal, aType, bVal, bType := getABValType(a, b)
 
-	itemType := bType.Elem()
 	if aType.Kind() != reflect.Slice || bType.Kind() != reflect.Slice {
-		return reflect.Zero(itemType)
+		return reflect.Zero(aType)
 	}
 
 	bMap := makeSliceMapInterface(bVal)

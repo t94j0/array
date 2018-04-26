@@ -41,6 +41,14 @@ func BenchmarkInLen1000(b *testing.B)    { benchmarkIn(1000, b) }
 func BenchmarkInLen1000000(b *testing.B) { benchmarkIn(1000000, b) }
 
 // Tests
+func TestIn_notslice(t *testing.T) {
+	a := 14
+
+	if In(0, a) {
+		t.Fatalf("Should fail")
+	}
+}
+
 func TestIn_intequal(t *testing.T) {
 	a := []int{1, 2, 3, 4}
 
